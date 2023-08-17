@@ -1,5 +1,6 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const db = require('../database/connection');
+const cors = require('cors')
 
 class Server {
     constructor(){
@@ -7,9 +8,9 @@ class Server {
         this.port = process.env.PORT;
         this.auth = '/v1/auth';
         this.connectionDB();
+        this.middlewares()
         this.routes();
         this.server = require('http').createServer(this.app);
-
     }
 
     async connectionDB() {
@@ -19,6 +20,15 @@ class Server {
         } catch (error) {
             throw new Error(error)
         }
+    }
+
+    middlewares() {
+
+        //cors
+        this.app.use(cors());
+
+        //lectura del body
+        this.app.use(express.json());
     }
 
 
