@@ -1,5 +1,6 @@
 const { response, required } = require('express');
 const user = require('../models/user.model');
+const { generateJWT } = require('../helpers/generate-jwt');
 
 const getUserId = async() => {
     let userId = 1;
@@ -54,6 +55,57 @@ const setRegister = async(req = required, res = response) => {
     }
 }
 
+const setLogin = async(req = required, res = response) => {
+    const { username, email, password } = req.body;
+
+    try {
+        let currentUser = [];
+
+        if(username){
+            currentUser = await user.findAll({
+                where: { password, username }
+            });
+        }
+
+        if(email){
+            currentUser = await user.findAll({
+                where: { password, email }
+            });
+        }
+
+        if(!currentUser.length){
+            res.status(404).json({
+                success: false,
+                message: 'Datos incorrectos por favor verifica',
+            });
+            return;
+        }
+
+        const payloadJWT = {
+            user_id: currentUser[0].user_id,
+            name: currentUser[0].name,
+            email: currentUser[0].email,
+            username: currentUser[0].username
+        }
+
+        //generar el JWT
+        const token = await generateJWT(payloadJWT);
+
+        res.status(200).json({
+            success: true,
+            access_token: token
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        })
+        throw new Error(`Ocurrio una inconsistencia ${error}`);
+    }
+}
+
 module.exports = {
-    setRegister
+    setRegister,
+    setLogin
 }
