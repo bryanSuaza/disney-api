@@ -1,6 +1,8 @@
 const express = require('express');
 const db = require('../database/connection');
-const cors = require('cors')
+const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('../swagger');
 
 class Server {
     constructor(){
@@ -10,7 +12,8 @@ class Server {
         this.character = '/v1/characters';
         this.movie = '/v1/movies';
         this.connectionDB();
-        this.middlewares()
+        this.middlewares();
+        this.swagger();
         this.routes();
         this.server = require('http').createServer(this.app);
     }
@@ -33,6 +36,9 @@ class Server {
         this.app.use(express.json());
     }
 
+    swagger(){
+        this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    }
 
     routes () {
         this.app.use(this.auth, require('../routes/auth.routes'));

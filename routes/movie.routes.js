@@ -2,22 +2,112 @@ const { Router } = require("express");
 const { validateJWT } = require("../middlewares/validate-jwt");
 const { check } = require("express-validator");
 const { validateFields } = require("../middlewares/validate-fields");
-const { createMovie, updateMovie } = require("../controllers/movie.controller");
+const {  
+    createMovie, 
+    updateMovie, 
+    deleteMovie, 
+    getMovies, 
+    getMovieDetail, 
+    searchMovie 
+} = require("../controllers/movie.controller");
 
 const router = Router();
 
-// router.get('/', [validateJWT], getCharacters);
+/**
+ * @swagger
+ * /v1/movies:
+ *   get:
+ *     summary: Obtener película
+ *     parameters:
+ *       - in: header
+ *         name: x-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Token de autenticación
+ *     responses:
+ *       200:
+ *         description: lista de película
+ */
+router.get('/', [validateJWT], getMovies);
 
-// router.get('/search', [validateJWT], searchCharacter);
+/**
+ * @swagger
+ * /v1/movies/search?query:
+ *   get:
+ *     summary: Buscar película
+ *     parameters:
+ *       - in: header
+ *         name: x-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Token de autenticación
+ *     responses:
+ *       200:
+ *         description: información de la película
+ */
+router.get('/search', [validateJWT], searchMovie);
 
-/* router.get('/:character_id', [ 
-    check('character_id', 'El id es obligatorio').not().isEmpty(),
-    check('character_id', 'El id debe ser un número').isNumeric(),
+/**
+ * @swagger
+ * /v1/movies/:movie_id:
+ *   get:
+ *     summary: Obtener detalles de la pelicula
+ *     parameters:
+ *       - in: header
+ *         name: x-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Token de autenticación
+ *     responses:
+ *       200:
+ *         description: información de la película detallado
+ */
+router.get('/:movie_id', [ 
+    check('movie_id', 'El id es obligatorio').not().isEmpty(),
+    check('movie_id', 'El id debe ser un número entero').isNumeric(),
     validateFields,
     validateJWT 
-], getCharacterDetail); */
+], getMovieDetail);
 
 
+/**
+ * @swagger
+ * /v1/movies:
+ *   post:
+ *     summary: Crear película
+ *     parameters:
+ *       - in: header
+ *         name: x-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Token de autenticación
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               image: 
+ *                 type: string
+ *               rating:
+ *                 type: string
+ *               gender_id:
+ *                 type: string
+ *               characters:
+ *                 type: array
+ *                 items: 
+ *                      type: integer
+ *     responses:
+ *       200:
+ *         description: información de la película creado
+ */
 router.post('/', [
     check('title', 'El titulo es obligatorio').not().isEmpty(),
     check('rating', 'La calificacón es obligatoria').not().isEmpty(),
@@ -26,6 +116,40 @@ router.post('/', [
     validateJWT
 ], createMovie);
 
+/**
+ * @swagger
+ * /v1/movies/:movie_id:
+ *   patch:
+ *     summary: Actualizar película
+ *     parameters:
+ *       - in: header
+ *         name: x-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Token de autenticación
+    *     requestBody:
+    *       content:
+    *         application/json:
+    *           schema:
+    *             type: object
+    *             properties:
+    *               title:
+    *                 type: string
+    *               image: 
+    *                 type: string
+    *               rating:
+    *                 type: string
+    *               gender_id:
+    *                 type: string
+    *               characters:
+    *                 type: array
+    *                 items: 
+    *                      type: integer
+ *     responses:
+ *       200:
+ *         description: información de la pelicula actualizada
+ */
 router.patch('/:movie_id', [ 
     check('movie_id', 'El id es obligatorio').not().isEmpty(),
     check('movie_id', 'El id debe ser un número entero').isNumeric(),
@@ -33,11 +157,27 @@ router.patch('/:movie_id', [
     validateJWT 
 ], updateMovie);
 
-/*router.delete('/:character_id', [ 
-    check('character_id', 'El id es obligatorio').not().isEmpty(),
-    check('character_id', 'El id debe ser un número').isNumeric(),
+/**
+ * @swagger
+ * /v1/movies/:movie_id:
+ *   delete:
+ *     summary: Eliminar película
+ *     parameters:
+ *       - in: header
+ *         name: x-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Token de autenticación
+ *     responses:
+ *       200:
+ *         description: información del personaje eliminado
+ */
+router.delete('/:movie_id', [ 
+    check('movie_id', 'El id es obligatorio').not().isEmpty(),
+    check('movie_id', 'El id debe ser un número').isNumeric(),
     validateFields,
     validateJWT 
-], deleteCharacter); */
+], deleteMovie);
 
 module.exports = router;

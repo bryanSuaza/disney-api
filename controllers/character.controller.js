@@ -5,7 +5,9 @@ const { Op } = require('sequelize');
 
 const getCharacterId = async() => {
     let characterId = 1;
-    const characters = await character.findAll();
+    const characters = await character.findAll({
+        paranoid: false
+    });
 
     if(characters.length > 0){
         characterId = characters[characters.length - 1].character_id + 1;
