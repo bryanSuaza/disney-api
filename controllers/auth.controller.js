@@ -93,7 +93,7 @@ const setLogin = async(req = required, res = response) => {
 
         res.status(200).json({
             success: true,
-            access_token: token
+            x_token: token
         });
 
     } catch (error) {
