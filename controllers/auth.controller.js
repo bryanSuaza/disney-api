@@ -51,7 +51,7 @@ const setRegister = async(req = required, res = response) => {
             success: false,
             message: error.message,
         })
-        throw new Error(`Ocurrio una inconsistencia ${error}`);
+        console.log(`Ocurrio una inconsistencia ${error}`);
     }
 }
 
@@ -101,7 +101,7 @@ const setLogin = async(req = required, res = response) => {
             success: false,
             message: error.message,
         })
-        throw new Error(`Ocurrio una inconsistencia ${error}`);
+        console.log(`Ocurrio una inconsistencia ${error}`);
     }
 }
 

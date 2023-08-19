@@ -8,6 +8,7 @@ class Server {
         this.port = process.env.PORT;
         this.auth = '/v1/auth';
         this.character = '/v1/characters';
+        this.movie = '/v1/movies';
         this.connectionDB();
         this.middlewares()
         this.routes();
@@ -36,6 +37,7 @@ class Server {
     routes () {
         this.app.use(this.auth, require('../routes/auth.routes'));
         this.app.use(this.character, require('../routes/character.routes'));
+        this.app.use(this.movie, require('../routes/movie.routes'));
     }
 
     listen() {
